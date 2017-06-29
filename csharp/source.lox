@@ -1,0 +1,4 @@
+
+var fred = "some value";
+var fred2 = fred;
+print fred2;
