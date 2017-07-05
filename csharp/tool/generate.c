@@ -7,13 +7,6 @@
 
 int main() {
 
-    const char *classNames[NUM_CLASSES] = {
-        "Binary",
-        "Grouping",
-        "Literal",
-        "Unary"
-    };
-
     const char *classes[NUM_CLASSES] = {
         "Binary:Expr left, Token op, Expr right",
         "Grouping:Expr exp",

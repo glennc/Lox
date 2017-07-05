@@ -13,6 +13,18 @@ namespace Lox
             Report(line, "", message);
         }
 
+        public static void Error(Token token, string message)
+        {
+            if(token.Type == TokenType.EOF)
+            {
+                Report(token.Line, " at end ", message);                
+            }
+            else
+            {
+                Report(token.Line, $" at '{token.Lexeme}'", message);
+            }
+        }
+
         public static void Report(int line, string where, string message)
         {
             Console.WriteLine($"[line {line}] Error {where}: {message}");
@@ -63,6 +75,15 @@ namespace Lox
             var scanner = new Scanner(code);
             var tokens = scanner.ScanTokens();
 
+            var parser = new Parser(tokens);
+
+            var expr = parser.Parse();
+
+            if(Lox.HadError) return 1;
+
+            var printer = new Printer();
+            printer.Print(expr);
+
             foreach(var token in tokens)
             {
                 Console.WriteLine(token);
@@ -75,7 +96,7 @@ namespace Lox
             while(true)
             {
                 Lox.HadError = false;
-                Console.WriteLine("> ");
+                Console.Write("> ");
                 Run(Console.ReadLine());
             }
         }
