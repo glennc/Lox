@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.razor": "razor",
+        "stdio.h": "c",
+        "assert.h": "c",
+        "stdlib.h": "c"
+    }
+}
