@@ -30,6 +30,12 @@ namespace Lox
             Console.WriteLine($"[line {line}] Error {where}: {message}");
             HadError = true;
         }
+
+        public static void RuntimeError(RuntimeError error) 
+        {
+            Console.WriteLine(error.ErrorMessage + "\n[line " + error.Token.Line + "]");
+            HadError = true;
+        }
     }
 
     class Program
@@ -48,8 +54,12 @@ namespace Lox
         //     new Printer().Print(expression);
         // }
 
+        private static Interpreter _interpreter;
+
         static int Main(string[] args)
         {
+            _interpreter = new Interpreter();
+
             if(args.Length > 1)
             {
                 Console.WriteLine("Usage: jlox [script]");
@@ -79,15 +89,8 @@ namespace Lox
 
             var expr = parser.Parse();
 
-            if(Lox.HadError) return 1;
+            _interpreter.Interpret(expr);
 
-            var printer = new Printer();
-            printer.Print(expr);
-
-            foreach(var token in tokens)
-            {
-                Console.WriteLine(token);
-            }
             return Lox.HadError ? 0 : 1;
         }
 

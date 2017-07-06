@@ -22,7 +22,7 @@ int main() {
 
     fprintf(vp, "namespace Lox\n");
     fprintf(vp, "{\n");
-    fprintf(vp, "\tpublic interface IVisitor\n");
+    fprintf(vp, "\tpublic interface IVisitor<T>\n");
     fprintf(vp, "\t{\n");
 
     for(int i = 0; i < NUM_CLASSES; i++)
@@ -34,7 +34,7 @@ int main() {
 
         char* classLower = strdup(className);
         classLower[0] = tolower(className[0]);
-        fprintf(vp, "\t\tvoid Visit(%s %s);\n", className, classLower);
+        fprintf(vp, "\t\t T Visit(%s %s);\n", className, classLower);
 
         char fileName[40] = "./generated/";
         strcat(fileName, className);
@@ -80,9 +80,9 @@ int main() {
         }
 
         fprintf(fp, "\n");
-        fprintf(fp, "\t\tpublic override void Accept(IVisitor visitor)\n");
+        fprintf(fp, "\t\tpublic override T Accept<T>(IVisitor<T> visitor)\n");
         fprintf(fp, "\t\t{\n");
-        fprintf(fp, "\t\t\tvisitor.Visit(this);\n");
+        fprintf(fp, "\t\t\treturn visitor.Visit(this);\n");
         fprintf(fp, "\t\t}\n");
 
         fprintf(fp, "\t}\n");

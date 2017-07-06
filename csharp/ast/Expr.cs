@@ -3,6 +3,6 @@ namespace Lox
 {
     public abstract class Expr
     {
-        public abstract void Accept(IVisitor visitor);
+        public abstract T Accept<T>(IVisitor<T> visitor);
     }
 }

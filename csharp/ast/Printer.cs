@@ -3,51 +3,46 @@ using System.Text;
 
 namespace Lox
 {
-    public class Printer : IVisitor
+    public class Printer : IVisitor<string>
     {
-        private StringBuilder _builder;
-
-        public Printer()
-        {
-            _builder = new StringBuilder();
-        }
 
         public void Print(Expr expression)
         {
-            expression.Accept(this);
-            Console.WriteLine(_builder.ToString());
+            Console.WriteLine(expression.Accept(this));
         }
 
-        private void Parenthesize(string name, params Expr[] exprs)
+        private string Parenthesize(string name, params Expr[] exprs)
         {
-            _builder.Append("(").Append(name);
+            var builder = new StringBuilder();
+            builder.Append("(").Append(name);
             foreach(var expr in exprs)
             {
-                _builder.Append(" ");
+                builder.Append(" ");
                 expr.Accept(this);
             }
-            _builder.Append(")");
+            builder.Append(")");
+            return builder.ToString();
         }
 
-        public void Visit(Binary binary)
+        public string Visit(Binary binary)
         {
-            Parenthesize(binary.op.Lexeme, binary.left, binary.right);
+            return Parenthesize(binary.op.Lexeme, binary.left, binary.right);
         }
 
-        public void Visit(Grouping grouping)
+        public string Visit(Grouping grouping)
         {
-            Parenthesize("group", grouping.exp);
+            return Parenthesize("group", grouping.exp);
         }
 
-        public void Visit(Literal literal)
+        public string Visit(Literal literal)
         {
-            if(literal.val == null) _builder.Append("nil");
-            _builder.Append(literal.val);
+            if(literal.val == null) return "nil";
+            return literal.val.ToString();
         }
 
-        public void Visit(Unary unary)
+        public string Visit(Unary unary)
         {
-            Parenthesize(unary.op.Lexeme, unary.right);
+            return Parenthesize(unary.op.Lexeme, unary.right);
         }
     }
 }

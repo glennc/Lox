@@ -11,9 +11,9 @@ namespace Lox
 
 		public object val { get; set; }
 
-		public override void Accept(IVisitor visitor)
+		public override T Accept<T>(IVisitor<T> visitor)
 		{
-				visitor.Visit(this);
+			return visitor.Visit(this);
 		}
 	}
 }

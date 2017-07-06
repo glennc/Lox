@@ -2,11 +2,11 @@ using System;
 
 namespace Lox
 {
-	public interface IVisitor
+	public interface IVisitor<T>
 	{
-		void Visit(Binary binary);
-		void Visit(Grouping grouping);
-		void Visit(Literal literal);
-		void Visit(Unary unary);
+		 T Visit(Binary binary);
+		 T Visit(Grouping grouping);
+		 T Visit(Literal literal);
+		 T Visit(Unary unary);
 	}
 }
