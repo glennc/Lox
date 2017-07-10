@@ -44,5 +44,10 @@ namespace Lox
         {
             return Parenthesize(unary.op.Lexeme, unary.right);
         }
+
+        public string Visit(Variable var)
+        {
+            return string.Empty;
+        }
     }
 }

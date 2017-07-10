@@ -1,21 +1,29 @@
 
 using System;
+using System.Collections.Generic;
 
 namespace Lox
 {
-    public class Interpreter : IVisitor<object>
+    public class Interpreter : IVisitor<object>, IStmtVisitor
     {
-        public void Interpret(Expr expression)
+        public void Interpret(List<Stmt> stmts)
         {
             try
             {
-                var result = expression.Accept(this);
-                Console.WriteLine($"{Stringify(result)}");
+                foreach(var stmt in stmts)
+                {
+                    Execute(stmt);
+                }
             }
             catch(RuntimeError ex)
             {
                 Lox.RuntimeError(ex);
             }
+        }
+
+        private void Execute(Stmt stmt)
+        {
+            stmt.Accept(this);
         }
 
         private string Stringify(object result)
@@ -133,6 +141,27 @@ namespace Lox
             if(right is bool) return (bool)right;
 
             return true;
+        }
+
+        public void Visit(Print print)
+        {
+            var val = Evaluate(print.Expr);
+            Console.WriteLine(Stringify(val));
+        }
+
+        public void Visit(Expression expr)
+        {
+            Evaluate(expr.Expr);
+        }
+
+        public void Visit(Var var)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object Visit(Variable variable)
+        {
+            throw new NotImplementedException();
         }
     }
 }

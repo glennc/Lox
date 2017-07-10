@@ -8,5 +8,7 @@ namespace Lox
 		 T Visit(Grouping grouping);
 		 T Visit(Literal literal);
 		 T Visit(Unary unary);
+		 T Visit(Variable variable);
+		 T Visit(Assign assign);
 	}
 }

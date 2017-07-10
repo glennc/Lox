@@ -14,6 +14,45 @@ namespace Lox
             _current = 0;    
         }
 
+        public List<Stmt> Parse()
+        {
+            var stmts = new List<Stmt>();
+            while(!IsAtEnd())
+            {
+                stmts.Add(Declaration());
+            }
+
+            return stmts;
+        }
+
+        private Stmt Declaration()
+        {
+            try
+            {
+                if(Match(TokenType.VAR)) return VarDeclaration();
+
+                return Statement();
+            }
+            catch(ParseError)
+            {
+                Synchronize();
+                return null;
+            }
+        }
+
+        private Stmt VarDeclaration()
+        {
+            Token name = Consume(TokenType.IDENTIFIER, "Expect variable name.");
+
+            Expr initializer = null;
+            if (Match(TokenType.EQUAL)) {
+                initializer = Expression();
+            }
+
+            Consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
+            return new Var(name, initializer);
+        }
+
         /*expression → equality*/
         private Expr Expression()
         {
@@ -104,6 +143,11 @@ namespace Lox
                 return new Literal(Previous().Literal);
             }
 
+            if(Match(TokenType.IDENTIFIER))
+            {
+                return new Variable(Previous());
+            }
+
             if(Match(TokenType.LEFT_PAREN))
             {
                 Expr expr = Expression();
@@ -114,16 +158,25 @@ namespace Lox
             throw Error(Peek(), "Expect expression.");
         }
 
-        public Expr Parse()
+        private Stmt Statement()
         {
-            try
-            {
-                return Expression();
-            }
-            catch
-            {
-                return null;
-            }
+            if(Match(TokenType.PRINT)) return PrintStmt();
+
+            return ExpressionStmt();
+        }
+
+        private Stmt ExpressionStmt()
+        {
+            Expr expr = Expression();
+            Consume(TokenType.SEMICOLON, "Expect ';' after expression.");
+            return new Expression(expr);
+        }
+
+        private Stmt PrintStmt()
+        {
+            Expr value = Expression();
+            Consume(TokenType.SEMICOLON, "Expect ';' after value.");
+            return new Print(value);
         }
 
         private void Synchronize()
@@ -156,10 +209,10 @@ namespace Lox
             throw Error(Peek(), msg);
         }
 
-        private Exception Error(Token token, string msg)
+        private ParseError Error(Token token, string msg)
         {
             Lox.Error(token, msg);
-            return new InvalidOperationException(msg);
+            return new ParseError(token, msg);
         }
 
         private bool Match(params TokenType[] tokens)

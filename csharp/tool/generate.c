@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#define NUM_CLASSES 4
+#define NUM_CLASSES 6
 
 int main() {
 
@@ -11,7 +11,9 @@ int main() {
         "Binary:Expr left, Token op, Expr right",
         "Grouping:Expr exp",
         "Literal:object val",
-        "Unary:Token op, Expr right"
+        "Unary:Token op, Expr right",
+        "Variable:Token name",
+        "Assign:Token name, Expr value"
     };
 
     FILE *vp;
